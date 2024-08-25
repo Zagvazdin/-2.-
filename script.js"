@@ -1,0 +1,105 @@
+class Library {
+    #books;
+
+    constructor(initialBooks = []) {
+        this.#books = [];
+        initialBooks.forEach(book => this.addBook(book));
+    }
+
+    get allBooks() {
+        return this.#books;
+    }
+
+    addBook(title) {
+        if (this.#books.includes(title)) {
+            throw new Error(`Книга "${title}" уже существует в библиотеке.`);
+        }
+        this.#books.push(title);
+    }
+
+    removeBook(title) {
+        const index = this.#books.indexOf(title);
+        if (index === -1) {
+            throw new Error(`Книга "${title}" не найдена в библиотеке.`);
+        }
+        this.#books.splice(index, 1);
+    }
+
+    hasBook(title) {
+        return this.#books.includes(title);
+    }
+}
+
+// Пример использования
+const library = new Library(['1984', 'Brave New World']);
+console.log(library.allBooks); // ['1984', 'Brave New World']
+library.addBook('Fahrenheit 451');
+console.log(library.allBooks); // ['1984', 'Brave New World', 'Fahrenheit 451']
+library.removeBook('1984');
+console.log(library.allBooks); // ['Brave New World', 'Fahrenheit 451']
+console.log(library.hasBook('1984')); // false
+
+
+// -----------------------------------------------------------------------------
+
+
+
+
+const initialData = [
+    {
+        product: "Apple iPhone 13",
+        reviews: [
+            { id: "1", text: "Отличный телефон! Батарея держится долго." },
+            { id: "2", text: "Камера супер, фото выглядят просто потрясающе." },
+        ],
+    },
+    {
+        product: "Samsung Galaxy Z Fold 3",
+        reviews: [
+            { id: "3", text: "Интересный дизайн, но дорогой." },
+        ],
+    },
+    {
+        product: "Sony PlayStation 5",
+        reviews: [
+            { id: "4", text: "Люблю играть на PS5, графика на высоте." },
+        ],
+    },
+];
+
+const reviewsContainer = document.getElementById('reviews-container');
+const reviewInput = document.getElementById('review-input');
+const submitButton = document.getElementById('submit-review');
+
+// Инициализация отзывов
+initialData.forEach(product => {
+    product.reviews.forEach(review => {
+        addReviewToDOM(review.text);
+    });
+});
+
+// Функция для добавления отзыва
+function addReview(text) {
+    if (text.length < 50 || text.length > 500) {
+        throw new Error("Отзыв должен содержать от 50 до 500 символов.");
+    }
+    addReviewToDOM(text);
+}
+
+// Функция для отображения отзыва на странице
+function addReviewToDOM(text) {
+    const reviewElement = document.createElement('div');
+    reviewElement.textContent = text;
+    reviewsContainer.appendChild(reviewElement);
+}
+
+// Обработчик события для кнопки отправки отзыва
+submitButton.addEventListener('click', () => {
+    try {
+        const reviewText = reviewInput.value.trim();
+        addReview(reviewText);
+        reviewInput.value = ''; // Очистка поля ввода
+    } catch (error) {
+        alert(error.message);
+    }
+});
